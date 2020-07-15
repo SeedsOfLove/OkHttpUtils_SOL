@@ -1,0 +1,3 @@
+include ':OkHttpUtilsLib'
+include ':app'
+rootProject.name = "OkHttpUtils_SOL"
