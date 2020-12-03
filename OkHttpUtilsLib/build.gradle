@@ -1,4 +1,4 @@
-apply plugin: 'com.android.library'
+ apply plugin: 'com.android.library'
 
 // JitPack Maven
 apply plugin: 'com.github.dcendents.android-maven'
@@ -35,5 +35,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //okhttp官方
-    api 'com.squareup.okhttp3:okhttp:4.8.0'
+//    api 'com.squareup.okhttp3:okhttp:4.8.0'
+
+    api 'com.squareup.okhttp3:okhttp:3.10.0'
 }

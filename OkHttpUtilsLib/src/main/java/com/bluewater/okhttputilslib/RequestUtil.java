@@ -7,9 +7,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.ConnectionPool;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -143,7 +145,14 @@ public class RequestUtil
      */
     private void getInstance()
     {
-        mOkHttpClient = new OkHttpClient();
+//        mOkHttpClient = new OkHttpClient();
+        mOkHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(120, TimeUnit.SECONDS)
+                .readTimeout(120, TimeUnit.SECONDS)
+                .writeTimeout(120, TimeUnit.SECONDS)
+                .connectionPool(new ConnectionPool(32, 5, TimeUnit.MINUTES))  //自定义连接池最大空闲连接数和等待时间大小，否则默认最大5个空闲连接
+                .build();
+
         mRequestBuilder = new Request.Builder();
 
         if (mFile != null || mfileList != null || mfileMap != null)     //先判断是否有文件
