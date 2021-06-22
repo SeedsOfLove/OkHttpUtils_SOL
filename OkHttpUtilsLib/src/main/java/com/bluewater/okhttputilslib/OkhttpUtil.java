@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Interceptor;
+
 /**
  * 网络请求框架类（okhttp进一步封装）
  */
@@ -19,7 +21,9 @@ public class OkhttpUtil
     public static final String FILE_TYPE_AUDIO = "audio/*";
     public static final String FILE_TYPE_VIDEO = "video/*";
 
-    //---------------------------GET-----------------------------//
+    /*###########################################################
+    ---------------------------GET-----------------------------
+    ###########################################################*/
 
     /**
      * get请求
@@ -54,36 +58,8 @@ public class OkhttpUtil
      */
     public static void okHttpGet(String url, Map<String, String> paramsMap, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_GET, url, paramsMap, 0, 0, 0, headerMap, callBack).execute();
+        new RequestUtil(METHOD_GET, url, paramsMap, 0, 0, 0, headerMap, null, callBack).execute();
     }
-
-    /**
-     * get请求（含超时）
-     * @param url
-     * @param connectTimeout
-     * @param writeTimeout
-     * @param readTimeout
-     * @param callBack
-     */
-    public static void okHttpGet(String url, long connectTimeout, long writeTimeout, long readTimeout, CallBackUtil callBack)
-    {
-        okHttpGet(url, null, connectTimeout, writeTimeout, readTimeout, null, callBack);
-    }
-
-    /**
-     * get请求，可以传递参数 （含超时）
-     * @param url
-     * @param paramsMap
-     * @param connectTimeout
-     * @param writeTimeout
-     * @param readTimeout
-     * @param callBack
-     */
-    public static void okHttpGet(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, CallBackUtil callBack)
-    {
-        okHttpGet(url, paramsMap, connectTimeout, writeTimeout, readTimeout, null, callBack);
-    }
-
 
     /**
      * get请求，可以传递参数（含超时）
@@ -97,14 +73,46 @@ public class OkhttpUtil
      */
     public static void okHttpGet(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_GET, url, paramsMap, connectTimeout, writeTimeout, readTimeout, headerMap, callBack).execute();
+        new RequestUtil(METHOD_GET, url, paramsMap, connectTimeout, writeTimeout, readTimeout, headerMap, null, callBack).execute();
     }
 
+    /**
+     * get请求，可以传递参数（拦截器）
+     * @param url
+     * @param paramsMap
+     * @param interceptor
+     * @param headerMap
+     * @param callBack
+     */
+    public static void okHttpGet(String url, Map<String, String> paramsMap, Map<String, String> headerMap, Interceptor interceptor, CallBackUtil callBack)
+    {
+        new RequestUtil(METHOD_GET, url, paramsMap, 0, 0, 0, headerMap, interceptor, callBack).execute();
+    }
 
-    //---------------------------GET END-----------------------------//
+    /**
+     * get请求，可以传递参数（含超时、拦截器）
+     * @param url
+     * @param paramsMap
+     * @param connectTimeout
+     * @param writeTimeout
+     * @param readTimeout
+     * @param headerMap
+     * @param callBack
+     */
+    public static void okHttpGet(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, Interceptor interceptor, CallBackUtil callBack)
+    {
+        new RequestUtil(METHOD_GET, url, paramsMap, connectTimeout, writeTimeout, readTimeout, headerMap, interceptor, callBack).execute();
+    }
+
+    /*###########################################################
+    ---------------------------GET END---------------------------
+    ###########################################################*/
 
 
-    //---------------------------POST-----------------------------//
+    /*###########################################################
+    ---------------------------POST-----------------------------
+    ###########################################################*/
+
     /**
      * post请求
      *
@@ -138,37 +146,7 @@ public class OkhttpUtil
      */
     public static void okHttpPost(String url, Map<String, String> paramsMap, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_POST, url, paramsMap, 0, 0, 0, headerMap, callBack).execute();
-    }
-
-
-    /**
-     * post请求（含超时）
-     *
-     * @param url
-     * @param connectTimeout
-     * @param writeTimeout
-     * @param readTimeout
-     * @param callBack
-     */
-    public static void okHttpPost(String url, long connectTimeout, long writeTimeout, long readTimeout, CallBackUtil callBack)
-    {
-        okHttpPost(url, null, connectTimeout, writeTimeout, readTimeout, callBack);
-    }
-
-    /**
-     * post请求，可以传递参数（含超时）
-     *
-     * @param url
-     * @param paramsMap
-     * @param connectTimeout
-     * @param writeTimeout
-     * @param readTimeout
-     * @param callBack
-     */
-    public static void okHttpPost(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, CallBackUtil callBack)
-    {
-        okHttpPost(url, paramsMap,connectTimeout, writeTimeout, readTimeout, null, callBack);
+        new RequestUtil(METHOD_POST, url, paramsMap, 0, 0, 0, headerMap, null, callBack).execute();
     }
 
     /**
@@ -184,13 +162,48 @@ public class OkhttpUtil
      */
     public static void okHttpPost(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_POST, url, paramsMap, connectTimeout, writeTimeout, readTimeout, headerMap, callBack).execute();
+        new RequestUtil(METHOD_POST, url, paramsMap, connectTimeout, writeTimeout, readTimeout, headerMap, null, callBack).execute();
     }
 
-    //---------------------------POST END-----------------------------//
+    /**
+     * post请求，可以传递参数（含拦截器）
+     *
+     * @param url
+     * @param paramsMap
+     * @param headerMap
+     * @param interceptor
+     * @param callBack
+     */
+    public static void okHttpPost(String url, Map<String, String> paramsMap, Map<String, String> headerMap, Interceptor interceptor, CallBackUtil callBack)
+    {
+        new RequestUtil(METHOD_POST, url, paramsMap, 0, 0, 0, headerMap, interceptor, callBack).execute();
+    }
+
+    /**
+     * post请求，可以传递参数（含超时、拦截器）
+     *
+     * @param url
+     * @param paramsMap
+     * @param connectTimeout
+     * @param writeTimeout
+     * @param readTimeout
+     * @param headerMap
+     * @param interceptor
+     * @param callBack
+     */
+    public static void okHttpPost(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, Interceptor interceptor, CallBackUtil callBack)
+    {
+        new RequestUtil(METHOD_POST, url, paramsMap, connectTimeout, writeTimeout, readTimeout, headerMap, interceptor, callBack).execute();
+    }
+
+    /*###########################################################
+    ---------------------------POST END--------------------------
+    ###########################################################*/
 
 
-    //---------------------------PUT-----------------------------//
+    /*###########################################################
+    ---------------------------PUT-----------------------------
+    ###########################################################*/
 
     /**
      * put请求
@@ -225,36 +238,7 @@ public class OkhttpUtil
      */
     public static void okHttpPut(String url, Map<String, String> paramsMap, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_PUT, url, paramsMap, 0, 0, 0, headerMap, callBack).execute();
-    }
-
-    /**
-     * put请求（含超时）
-     *
-     * @param url
-     * @param connectTimeout
-     * @param writeTimeout
-     * @param readTimeout
-     * @param callBack
-     */
-    public static void okHttpPut(String url, long connectTimeout, long writeTimeout, long readTimeout, CallBackUtil callBack)
-    {
-        okHttpPut(url, null, connectTimeout, writeTimeout, readTimeout, callBack);
-    }
-
-    /**
-     * put请求，可以传递参数（含超时）
-     *
-     * @param url
-     * @param paramsMap
-     * @param connectTimeout
-     * @param writeTimeout
-     * @param readTimeout
-     * @param callBack
-     */
-    public static void okHttpPut(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, CallBackUtil callBack)
-    {
-        okHttpPut(url, paramsMap, connectTimeout, writeTimeout, readTimeout, null, callBack);
+        new RequestUtil(METHOD_PUT, url, paramsMap, 0, 0, 0, headerMap, null, callBack).execute();
     }
 
     /**
@@ -268,16 +252,50 @@ public class OkhttpUtil
      * @param headerMap
      * @param callBack
      */
-    public static void okHttpPut(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, CallBackUtil callBack)
+    public static void okHttpPut(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap,  CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_PUT, url, paramsMap, connectTimeout, writeTimeout, readTimeout, headerMap, callBack).execute();
+        new RequestUtil(METHOD_PUT, url, paramsMap, connectTimeout, writeTimeout, readTimeout, headerMap, null, callBack).execute();
     }
 
-    //---------------------------PUT END-----------------------------//
+    /**
+     * put请求，可以传递参数（含拦截器）
+     *
+     * @param url
+     * @param paramsMap
+     * @param headerMap
+     * @param interceptor
+     * @param callBack
+     */
+    public static void okHttpPut(String url, Map<String, String> paramsMap, Map<String, String> headerMap, Interceptor interceptor,  CallBackUtil callBack)
+    {
+        new RequestUtil(METHOD_PUT, url, paramsMap, 0, 0, 0, headerMap, interceptor, callBack).execute();
+    }
+
+    /**
+     * put请求，可以传递参数（含超时、拦截器）
+     *
+     * @param url
+     * @param paramsMap
+     * @param connectTimeout
+     * @param writeTimeout
+     * @param readTimeout
+     * @param headerMap
+     * @param interceptor
+     * @param callBack
+     */
+    public static void okHttpPut(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, Interceptor interceptor,  CallBackUtil callBack)
+    {
+        new RequestUtil(METHOD_PUT, url, paramsMap, connectTimeout, writeTimeout, readTimeout, headerMap, interceptor, callBack).execute();
+    }
+
+    /*###########################################################
+    ---------------------------PUT END--------------------------
+    ###########################################################*/
 
 
-
-    //---------------------------DELETE-----------------------------//
+    /*###########################################################
+    ---------------------------DELETE----------------------------
+    ###########################################################*/
 
     /**
      * delete请求
@@ -312,14 +330,17 @@ public class OkhttpUtil
      */
     public static void okHttpDelete(String url, Map<String, String> paramsMap, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_DELETE, url, paramsMap, 0, 0, 0, headerMap, callBack).execute();
+        new RequestUtil(METHOD_DELETE, url, paramsMap, 0, 0, 0, headerMap, null, callBack).execute();
     }
 
-    //---------------------------DELETE END-----------------------------//
+    /*###########################################################
+    --------------------------DELETE END-------------------------
+    ###########################################################*/
 
 
-
-    //---------------------------POST 含请求体-----------------------------//
+    /*###########################################################
+    -------------------------POST 含请求体-------------------------
+    ###########################################################*/
     /**
      * post请求，可以传递请求体
      *
@@ -342,22 +363,7 @@ public class OkhttpUtil
      */
     public static void okHttpPostJson(String url, String jsonStr, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_POST, url, jsonStr, 0, 0, 0, headerMap, callBack).execute();
-    }
-
-    /**
-     * post请求，可以传递请求体（含超时）
-     *
-     * @param url
-     * @param jsonStr
-     * @param connectTimeout
-     * @param writeTimeout
-     * @param readTimeout
-     * @param callBack
-     */
-    public static void okHttpPostJson(String url, String jsonStr, long connectTimeout, long writeTimeout, long readTimeout, CallBackUtil callBack)
-    {
-        okHttpPostJson(url, jsonStr, connectTimeout, writeTimeout, readTimeout, null, callBack);
+        new RequestUtil(METHOD_POST, url, jsonStr, 0, 0, 0, headerMap, null, callBack).execute();
     }
 
     /**
@@ -373,12 +379,48 @@ public class OkhttpUtil
      */
     public static void okHttpPostJson(String url, String jsonStr, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_POST, url, jsonStr, connectTimeout, writeTimeout, readTimeout, headerMap, callBack).execute();
+        new RequestUtil(METHOD_POST, url, jsonStr, connectTimeout, writeTimeout, readTimeout, headerMap, null, callBack).execute();
     }
 
-    //---------------------------POST 含请求体 END-----------------------------//
+    /**
+     * post请求，可以传递请求体（含拦截器）
+     *
+     * @param url
+     * @param jsonStr
+     * @param headerMap
+     * @param interceptor
+     * @param callBack
+     */
+    public static void okHttpPostJson(String url, String jsonStr, Map<String, String> headerMap, Interceptor interceptor,  CallBackUtil callBack)
+    {
+        new RequestUtil(METHOD_POST, url, jsonStr, 0, 0, 0, headerMap, interceptor, callBack).execute();
+    }
 
-    //---------------------------POST 文件上传----------------------------//
+    /**
+     * post请求，可以传递请求体（含超时、拦截器）
+     *
+     * @param url
+     * @param jsonStr
+     * @param connectTimeout
+     * @param writeTimeout
+     * @param readTimeout
+     * @param headerMap
+     * @param interceptor
+     * @param callBack
+     */
+    public static void okHttpPostJson(String url, String jsonStr, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, Interceptor interceptor,  CallBackUtil callBack)
+    {
+        new RequestUtil(METHOD_POST, url, jsonStr, connectTimeout, writeTimeout, readTimeout, headerMap, interceptor, callBack).execute();
+    }
+
+    /*###########################################################
+    -----------------------POST 含请求体 END----------------------
+    ###########################################################*/
+
+
+    /*###########################################################
+    -------------------------POST 文件上传-------------------------
+    ###########################################################*/
     /**
      * post请求，上传单个文件
      *
@@ -511,9 +553,14 @@ public class OkhttpUtil
         new RequestUtil(METHOD_POST, url, paramsMap, fileMap, fileType, headerMap, callBack).execute();
     }
 
-    //---------------------------POST 文件上传 END----------------------------//
+    /*###########################################################
+    ----------------------POST 文件上传 END-----------------------
+    ###########################################################*/
 
-    //---------------------------文件下载----------------------------//
+
+    /*###########################################################
+    ------------------------- 文件下载 -------------------------
+    ###########################################################*/
     /**
      * 下载文件,不带参数
      */
@@ -530,9 +577,14 @@ public class OkhttpUtil
         okHttpGet(url, paramsMap, null, callBack);
     }
 
-    //---------------------------文件下载 END----------------------------//
+    /*###########################################################
+    ------------------------- 文件下载 END-------------------------
+    ###########################################################*/
 
-    //---------------------------加载图片----------------------------//
+
+    /*###########################################################
+    ------------------------- 加载图片 -------------------------
+    ###########################################################*/
     /**
      * 加载图片
      */
@@ -549,12 +601,17 @@ public class OkhttpUtil
         okHttpGet(url, paramsMap, null, callBack);
     }
 
-    //---------------------------加载图片 END----------------------------//
+    /*###########################################################
+    ------------------------- 加载图片 END-------------------------
+    ###########################################################*/
 
 
     /*###################################### 参考上面的事例 #########################################*/
 
-    //---------------------------PUT 含请求体-----------------------------//
+
+    /*###########################################################
+    ------------------------- PUT 含请求体-------------------------
+    ###########################################################*/
 
     /**
      * put请求，可以传递请求体
@@ -578,22 +635,7 @@ public class OkhttpUtil
      */
     public static void okHttpPutJson(String url, String jsonStr, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_PUT, url, jsonStr, 0, 0, 0, headerMap, callBack).execute();
-    }
-
-    /**
-     * put请求，可以传递请求体（含超时）
-     *
-     * @param url
-     * @param jsonStr
-     * @param connectTimeout
-     * @param writeTimeout
-     * @param readTimeout
-     * @param callBack
-     */
-    public static void okHttpPutJson(String url, String jsonStr, long connectTimeout, long writeTimeout, long readTimeout, CallBackUtil callBack)
-    {
-        okHttpPutJson(url, jsonStr, connectTimeout, writeTimeout, readTimeout, null, callBack);
+        new RequestUtil(METHOD_PUT, url, jsonStr, 0, 0, 0, headerMap, null, callBack).execute();
     }
 
     /**
@@ -609,10 +651,46 @@ public class OkhttpUtil
      */
     public static void okHttpPutJson(String url, String jsonStr, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_PUT, url, jsonStr, connectTimeout, writeTimeout, readTimeout, headerMap, callBack).execute();
+        new RequestUtil(METHOD_PUT, url, jsonStr, connectTimeout, writeTimeout, readTimeout, headerMap, null, callBack).execute();
     }
 
-    //---------------------------PUT 含请求体 END-----------------------------//
+    /**
+     * put请求，可以传递请求体（含拦截器）
+     *
+     * @param url
+     * @param jsonStr
+     * @param headerMap
+     * @param interceptor
+     * @param callBack
+     */
+    public static void okHttpPutJson(String url, String jsonStr, Map<String, String> headerMap, Interceptor interceptor,  CallBackUtil callBack)
+    {
+        new RequestUtil(METHOD_PUT, url, jsonStr, 0, 0, 0, headerMap, interceptor, callBack).execute();
+    }
 
-    /*##########################################################################################*/
+    /**
+     * put请求，可以传递请求体（含超时、拦截器）
+     *
+     * @param url
+     * @param jsonStr
+     * @param connectTimeout
+     * @param writeTimeout
+     * @param readTimeout
+     * @param headerMap
+     * @param interceptor
+     * @param callBack
+     */
+    public static void okHttpPutJson(String url, String jsonStr, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, Interceptor interceptor,  CallBackUtil callBack)
+    {
+        new RequestUtil(METHOD_PUT, url, jsonStr, connectTimeout, writeTimeout, readTimeout, headerMap, interceptor, callBack).execute();
+    }
+
+    /*###########################################################
+    ----------------------- PUT 含请求体 END-----------------------
+    ###########################################################*/
+
+
+
+
+
 }

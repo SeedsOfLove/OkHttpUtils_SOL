@@ -13,6 +13,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.ConnectionPool;
 import okhttp3.FormBody;
+import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -52,27 +53,35 @@ public class RequestUtil
     private Request.Builder mRequestBuilder;    //请求对象的构建者
     private Request mOkHttpRequest;             //请求对象
 
+    private Interceptor mInterceptor;           //拦截器
+
     //含参
     RequestUtil(String methodType, String url, Map<String, String> paramsMap,
                 long connectTimeout, long readTimeout, long writeTimeout,
-                Map<String, String> headerMap, CallBackUtil callBack)
+                Map<String, String> headerMap,
+                Interceptor interceptor,
+                CallBackUtil callBack)
     {
         this(methodType, url, null,
                 null, null, null, null, null,
                 connectTimeout, readTimeout, writeTimeout,
                 paramsMap, headerMap,
+                interceptor,
                 callBack);
     }
 
     //含请求体
     RequestUtil(String methodType, String url, String jsonStr,
                 long connectTimeout, long readTimeout, long writeTimeout,
-                Map<String, String> headerMap, CallBackUtil callBack)
+                Map<String, String> headerMap,
+                Interceptor interceptor,
+                CallBackUtil callBack)
     {
         this(methodType, url, jsonStr,
                 null, null, null, null, null,
                 connectTimeout, readTimeout, writeTimeout,
                 null, headerMap,
+                interceptor,
                 callBack);
     }
 
@@ -85,6 +94,7 @@ public class RequestUtil
                 file, null, fileKey, null, fileType,
                 0, 0, 0,
                 paramsMap, headerMap,
+                null,
                 callBack);
     }
 
@@ -97,6 +107,7 @@ public class RequestUtil
                 null, fileList, fileKey, null, fileType,
                 0, 0, 0,
                 paramsMap, headerMap,
+                null,
                 callBack);
     }
 
@@ -109,6 +120,7 @@ public class RequestUtil
                 null, null, null, fileMap, fileType,
                 0, 0, 0,
                 paramsMap, headerMap,
+                null,
                 callBack);
     }
 
@@ -123,14 +135,19 @@ public class RequestUtil
      * @param fileKey
      * @param fileMap
      * @param fileType
+     * @param connectTimeout
+     * @param readTimeout
+     * @param writeTimeout
      * @param paramsMap
      * @param headerMap
+     * @param interceptor
      * @param callBack
      */
     private RequestUtil(String methodType, String url, String jsonStr,
                         File file, List<File> fileList, String fileKey, Map<String, File> fileMap, String fileType,
                         long connectTimeout, long writeTimeout, long readTimeout,
                         Map<String, String> paramsMap, Map<String, String> headerMap,
+                        Interceptor interceptor,
                         CallBackUtil callBack)
     {
         mMetyodType = methodType;
@@ -143,12 +160,15 @@ public class RequestUtil
         mfileMap = fileMap;
         mFileType = fileType;
 
-        mConnectTimeout = connectTimeout;
-        mWriteTimeout = writeTimeout;
-        mReadTimeout = readTimeout;
+        mConnectTimeout = connectTimeout != 0? connectTimeout: 120;
+        mWriteTimeout = writeTimeout != 0? connectTimeout: 120;
+        mReadTimeout = readTimeout != 0? connectTimeout: 120;
 
         mParamsMap = paramsMap;
         mHeaderMap = headerMap;
+
+        mInterceptor = interceptor;
+
         mCallBack = callBack;
 
         getInstance();
@@ -159,19 +179,40 @@ public class RequestUtil
      */
     private void getInstance()
     {
-        if (mConnectTimeout == 0 & mReadTimeout == 0 & mWriteTimeout == 0)
+//        mOkHttpClient = new OkHttpClient.Builder()
+//                .connectTimeout(mConnectTimeout, TimeUnit.SECONDS)
+//                .readTimeout(mReadTimeout, TimeUnit.SECONDS)
+//                .writeTimeout(mWriteTimeout, TimeUnit.SECONDS)
+//                .connectionPool(new ConnectionPool(32, 5, TimeUnit.MINUTES))  //自定义连接池最大空闲连接数和等待时间大小，否则默认最大5个空闲连接
+//                .build();
+
+        /*-------------------配置Okhttp基础参数----------------------*/
+        OkHttpClient.Builder mOkHttpBuilder = new OkHttpClient.Builder();
+
+        if (mConnectTimeout != 0)
         {
-            mOkHttpClient = new OkHttpClient.Builder()
-                    .connectTimeout(mConnectTimeout, TimeUnit.SECONDS)
-                    .readTimeout(mReadTimeout, TimeUnit.SECONDS)
-                    .writeTimeout(mWriteTimeout, TimeUnit.SECONDS)
-                    .connectionPool(new ConnectionPool(32, 5, TimeUnit.MINUTES))  //自定义连接池最大空闲连接数和等待时间大小，否则默认最大5个空闲连接
-                    .build();
+            mOkHttpBuilder.connectTimeout(mConnectTimeout, TimeUnit.SECONDS);
         }
-        else
+
+        if (mReadTimeout != 0)
         {
-            mOkHttpClient = new OkHttpClient();
+            mOkHttpBuilder.readTimeout(mReadTimeout, TimeUnit.SECONDS);
         }
+
+        if (mWriteTimeout != 0)
+        {
+            mOkHttpBuilder.writeTimeout(mWriteTimeout, TimeUnit.SECONDS);
+        }
+
+        mOkHttpBuilder.connectionPool(new ConnectionPool(32, 5, TimeUnit.MINUTES));  //自定义连接池最大空闲连接数和等待时间大小，否则默认最大5个空闲连接
+
+        if (mInterceptor != null)
+        {
+            mOkHttpBuilder.addInterceptor(mInterceptor);
+        }
+
+        mOkHttpClient = mOkHttpBuilder.build();
+        /*-------------------end----------------------*/
 
         mRequestBuilder = new Request.Builder();
 
@@ -206,7 +247,6 @@ public class RequestUtil
             setHeader();        //设置请求头
         }
 
-        //mRequestBuilder.addHeader("Authorization","Bearer "+"token");可以把token添加到这儿
         mOkHttpRequest = mRequestBuilder.build();
     }
 
