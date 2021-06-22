@@ -40,6 +40,10 @@ public class RequestUtil
     private Map<String, File> mfileMap;         //文件集合，每个文件对应一个key
     private String mFileType;                   //文件类型的参数，与file同时存在
 
+    private long mConnectTimeout;            //连接超时
+    private long mWriteTimeout;              //写超时
+    private long mReadTimeout;               //读超时
+
     private Map<String, String> mParamsMap;     //键值对类型的参数，只有这一种情况下区分post和get。
     private Map<String, String> mHeaderMap;     //头参数
     private CallBackUtil mCallBack;             //回调接口
@@ -49,34 +53,65 @@ public class RequestUtil
     private Request mOkHttpRequest;             //请求对象
 
     //含参
-    RequestUtil(String methodType, String url, Map<String, String> paramsMap, Map<String, String> headerMap, CallBackUtil callBack)
+    RequestUtil(String methodType, String url, Map<String, String> paramsMap,
+                long connectTimeout, long readTimeout, long writeTimeout,
+                Map<String, String> headerMap, CallBackUtil callBack)
     {
-        this(methodType, url, null, null, null, null, null, null, paramsMap, headerMap, callBack);
+        this(methodType, url, null,
+                null, null, null, null, null,
+                connectTimeout, readTimeout, writeTimeout,
+                paramsMap, headerMap,
+                callBack);
     }
 
     //含请求体
-    RequestUtil(String methodType, String url, String jsonStr, Map<String, String> headerMap, CallBackUtil callBack)
+    RequestUtil(String methodType, String url, String jsonStr,
+                long connectTimeout, long readTimeout, long writeTimeout,
+                Map<String, String> headerMap, CallBackUtil callBack)
     {
-        this(methodType, url, jsonStr, null, null, null, null, null, null, headerMap, callBack);
+        this(methodType, url, jsonStr,
+                null, null, null, null, null,
+                connectTimeout, readTimeout, writeTimeout,
+                null, headerMap,
+                callBack);
     }
 
     //含文件（单个）
-    RequestUtil(String methodType, String url, Map<String, String> paramsMap, File file, String fileKey, String fileType, Map<String, String> headerMap, CallBackUtil callBack)
+    RequestUtil(String methodType, String url, Map<String, String> paramsMap,
+                File file, String fileKey, String fileType,
+                Map<String, String> headerMap, CallBackUtil callBack)
     {
-        this(methodType, url, null, file, null, fileKey, null, fileType, paramsMap, headerMap, callBack);
+        this(methodType, url, null,
+                file, null, fileKey, null, fileType,
+                0, 0, 0,
+                paramsMap, headerMap,
+                callBack);
     }
 
     //含文件（List多个）
-    RequestUtil(String methodType, String url, Map<String, String> paramsMap, List<File> fileList, String fileKey, String fileType, Map<String, String> headerMap, CallBackUtil callBack)
+    RequestUtil(String methodType, String url, Map<String, String> paramsMap,
+                List<File> fileList, String fileKey, String fileType,
+                Map<String, String> headerMap, CallBackUtil callBack)
     {
-        this(methodType, url, null, null, fileList, fileKey, null, fileType, paramsMap, headerMap, callBack);
+        this(methodType, url, null,
+                null, fileList, fileKey, null, fileType,
+                0, 0, 0,
+                paramsMap, headerMap,
+                callBack);
     }
 
     //含文件（Map多个）
-    RequestUtil(String methodType, String url, Map<String, String> paramsMap, Map<String, File> fileMap, String fileType, Map<String, String> headerMap, CallBackUtil callBack)
+    RequestUtil(String methodType, String url, Map<String, String> paramsMap,
+                Map<String, File> fileMap, String fileType,
+                Map<String, String> headerMap, CallBackUtil callBack)
     {
-        this(methodType, url, null, null, null, null, fileMap, fileType, paramsMap, headerMap, callBack);
+        this(methodType, url, null,
+                null, null, null, fileMap, fileType,
+                0, 0, 0,
+                paramsMap, headerMap,
+                callBack);
     }
+
 
     /**
      * 构造
@@ -94,22 +129,85 @@ public class RequestUtil
      */
     private RequestUtil(String methodType, String url, String jsonStr,
                         File file, List<File> fileList, String fileKey, Map<String, File> fileMap, String fileType,
+                        long connectTimeout, long writeTimeout, long readTimeout,
                         Map<String, String> paramsMap, Map<String, String> headerMap,
                         CallBackUtil callBack)
     {
         mMetyodType = methodType;
         mUrl = url;
         mJsonStr = jsonStr;
+
         mFile = file;
         mfileList = fileList;
         mfileKey = fileKey;
         mfileMap = fileMap;
         mFileType = fileType;
+
+        mConnectTimeout = connectTimeout;
+        mWriteTimeout = writeTimeout;
+        mReadTimeout = readTimeout;
+
         mParamsMap = paramsMap;
         mHeaderMap = headerMap;
         mCallBack = callBack;
 
         getInstance();
+    }
+
+    /**
+     * 创建OKhttpClient实例。
+     */
+    private void getInstance()
+    {
+        if (mConnectTimeout == 0 & mReadTimeout == 0 & mWriteTimeout == 0)
+        {
+            mOkHttpClient = new OkHttpClient.Builder()
+                    .connectTimeout(mConnectTimeout, TimeUnit.SECONDS)
+                    .readTimeout(mReadTimeout, TimeUnit.SECONDS)
+                    .writeTimeout(mWriteTimeout, TimeUnit.SECONDS)
+                    .connectionPool(new ConnectionPool(32, 5, TimeUnit.MINUTES))  //自定义连接池最大空闲连接数和等待时间大小，否则默认最大5个空闲连接
+                    .build();
+        }
+        else
+        {
+            mOkHttpClient = new OkHttpClient();
+        }
+
+        mRequestBuilder = new Request.Builder();
+
+        if (mFile != null || mfileList != null || mfileMap != null)     //先判断是否有文件
+        {
+            setFile();      //设置上传文件
+        }
+        else
+        {
+            //设置参数
+            switch (mMetyodType)
+            {
+                case OkhttpUtil.METHOD_GET:             //get
+                    setGetParams();
+                    break;
+                case OkhttpUtil.METHOD_POST:            //post
+                    mRequestBuilder.post(getRequestBody());
+                    break;
+                case OkhttpUtil.METHOD_PUT:             //put
+                    mRequestBuilder.put(getRequestBody());
+                    break;
+                case OkhttpUtil.METHOD_DELETE:          //delete
+                    mRequestBuilder.delete(getRequestBody());
+                    break;
+            }
+        }
+
+        mRequestBuilder.url(mUrl);  //配置Url
+
+        if (mHeaderMap != null)
+        {
+            setHeader();        //设置请求头
+        }
+
+        //mRequestBuilder.addHeader("Authorization","Bearer "+"token");可以把token添加到这儿
+        mOkHttpRequest = mRequestBuilder.build();
     }
 
     /**
@@ -138,56 +236,6 @@ public class RequestUtil
             }
 
         });
-    }
-
-    /**
-     * 创建OKhttpClient实例。
-     */
-    private void getInstance()
-    {
-//        mOkHttpClient = new OkHttpClient();
-        mOkHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(120, TimeUnit.SECONDS)
-                .readTimeout(120, TimeUnit.SECONDS)
-                .writeTimeout(120, TimeUnit.SECONDS)
-                .connectionPool(new ConnectionPool(32, 5, TimeUnit.MINUTES))  //自定义连接池最大空闲连接数和等待时间大小，否则默认最大5个空闲连接
-                .build();
-
-        mRequestBuilder = new Request.Builder();
-
-        if (mFile != null || mfileList != null || mfileMap != null)     //先判断是否有文件
-        {
-            setFile();      //设置上传文件
-        }
-        else
-        {
-            //设置参数
-            switch (mMetyodType)
-            {
-                case OkhttpUtil.METHOD_GET:             //get
-                    setGetParams();
-                    break;
-                case OkhttpUtil.METHOD_POST:            //post
-                    mRequestBuilder.post(getRequestBody());
-                    break;
-                case OkhttpUtil.METHOD_PUT:             //put
-                    mRequestBuilder.put(getRequestBody());
-                    break;
-                case OkhttpUtil.METHOD_DELETE:          //delete
-                    mRequestBuilder.delete(getRequestBody());
-                    break;
-            }
-        }
-
-        mRequestBuilder.url(mUrl);
-
-        if (mHeaderMap != null)
-        {
-            setHeader();        //设置请求头
-        }
-
-        //mRequestBuilder.addHeader("Authorization","Bearer "+"token");可以把token添加到这儿
-        mOkHttpRequest = mRequestBuilder.build();
     }
 
     /**
