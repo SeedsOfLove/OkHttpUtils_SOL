@@ -33,7 +33,7 @@ public class OkhttpUtil
      */
     public static void okHttpGet(String url, CallBackUtil callBack)
     {
-        okHttpGet(url, null, null, callBack);
+        okHttpGet(url, null, 0, 0, 0, null, null, callBack);
     }
 
     /**
@@ -45,7 +45,7 @@ public class OkhttpUtil
      */
     public static void okHttpGet(String url, Map<String, String> paramsMap, CallBackUtil callBack)
     {
-        okHttpGet(url, paramsMap, null, callBack);
+        okHttpGet(url, paramsMap, 0, 0, 0, null, null, callBack);
     }
 
     /**
@@ -58,7 +58,7 @@ public class OkhttpUtil
      */
     public static void okHttpGet(String url, Map<String, String> paramsMap, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_GET, url, paramsMap, 0, 0, 0, headerMap, null, callBack).execute();
+        okHttpGet(url, paramsMap, 0, 0, 0, headerMap, null, callBack);
     }
 
     /**
@@ -68,12 +68,11 @@ public class OkhttpUtil
      * @param connectTimeout
      * @param writeTimeout
      * @param readTimeout
-     * @param headerMap
      * @param callBack
      */
-    public static void okHttpGet(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, CallBackUtil callBack)
+    public static void okHttpGet(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_GET, url, paramsMap, connectTimeout, writeTimeout, readTimeout, headerMap, null, callBack).execute();
+        okHttpGet(url, paramsMap, connectTimeout, writeTimeout, readTimeout, null, null, callBack);
     }
 
     /**
@@ -81,12 +80,11 @@ public class OkhttpUtil
      * @param url
      * @param paramsMap
      * @param interceptor
-     * @param headerMap
      * @param callBack
      */
-    public static void okHttpGet(String url, Map<String, String> paramsMap, Map<String, String> headerMap, Interceptor interceptor, CallBackUtil callBack)
+    public static void okHttpGet(String url, Map<String, String> paramsMap, Interceptor interceptor, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_GET, url, paramsMap, 0, 0, 0, headerMap, interceptor, callBack).execute();
+        okHttpGet(url, paramsMap, 0, 0, 0, null, interceptor, callBack);
     }
 
     /**
@@ -103,6 +101,7 @@ public class OkhttpUtil
     {
         new RequestUtil(METHOD_GET, url, paramsMap, connectTimeout, writeTimeout, readTimeout, headerMap, interceptor, callBack).execute();
     }
+
 
     /*###########################################################
     ---------------------------GET END---------------------------
@@ -121,7 +120,7 @@ public class OkhttpUtil
      */
     public static void okHttpPost(String url, CallBackUtil callBack)
     {
-        okHttpPost(url, null, callBack);
+        okHttpPost(url, null, 0, 0, 0, null, null, callBack);
     }
 
     /**
@@ -133,7 +132,7 @@ public class OkhttpUtil
      */
     public static void okHttpPost(String url, Map<String, String> paramsMap, CallBackUtil callBack)
     {
-        okHttpPost(url, paramsMap, null, callBack);
+        okHttpPost(url, paramsMap, 0, 0, 0, null, null, callBack);
     }
 
     /**
@@ -146,7 +145,7 @@ public class OkhttpUtil
      */
     public static void okHttpPost(String url, Map<String, String> paramsMap, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_POST, url, paramsMap, 0, 0, 0, headerMap, null, callBack).execute();
+        okHttpPost(url, paramsMap, 0, 0, 0, headerMap, null, callBack);
     }
 
     /**
@@ -157,12 +156,11 @@ public class OkhttpUtil
      * @param connectTimeout
      * @param writeTimeout
      * @param readTimeout
-     * @param headerMap
      * @param callBack
      */
-    public static void okHttpPost(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, CallBackUtil callBack)
+    public static void okHttpPost(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_POST, url, paramsMap, connectTimeout, writeTimeout, readTimeout, headerMap, null, callBack).execute();
+        okHttpPost(url, paramsMap, connectTimeout, writeTimeout, readTimeout, null, null, callBack);
     }
 
     /**
@@ -170,13 +168,12 @@ public class OkhttpUtil
      *
      * @param url
      * @param paramsMap
-     * @param headerMap
      * @param interceptor
      * @param callBack
      */
-    public static void okHttpPost(String url, Map<String, String> paramsMap, Map<String, String> headerMap, Interceptor interceptor, CallBackUtil callBack)
+    public static void okHttpPost(String url, Map<String, String> paramsMap, Interceptor interceptor, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_POST, url, paramsMap, 0, 0, 0, headerMap, interceptor, callBack).execute();
+        okHttpPost(url, paramsMap, 0, 0, 0, null, interceptor, callBack);
     }
 
     /**
@@ -213,7 +210,7 @@ public class OkhttpUtil
      */
     public static void okHttpPut(String url, CallBackUtil callBack)
     {
-        okHttpPut(url, null, callBack);
+        okHttpPut(url, null, 0, 0, 0, null, null, callBack);
     }
 
     /**
@@ -225,7 +222,7 @@ public class OkhttpUtil
      */
     public static void okHttpPut(String url, Map<String, String> paramsMap, CallBackUtil callBack)
     {
-        okHttpPut(url, paramsMap, null, callBack);
+        okHttpPut(url, paramsMap, 0, 0, 0, null, null, callBack);
     }
 
     /**
@@ -238,7 +235,7 @@ public class OkhttpUtil
      */
     public static void okHttpPut(String url, Map<String, String> paramsMap, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_PUT, url, paramsMap, 0, 0, 0, headerMap, null, callBack).execute();
+        okHttpPut(url, paramsMap, 0, 0, 0, headerMap, null, callBack);
     }
 
     /**
@@ -249,12 +246,11 @@ public class OkhttpUtil
      * @param connectTimeout
      * @param writeTimeout
      * @param readTimeout
-     * @param headerMap
      * @param callBack
      */
-    public static void okHttpPut(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap,  CallBackUtil callBack)
+    public static void okHttpPut(String url, Map<String, String> paramsMap, long connectTimeout, long writeTimeout, long readTimeout, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_PUT, url, paramsMap, connectTimeout, writeTimeout, readTimeout, headerMap, null, callBack).execute();
+        okHttpPut(url, paramsMap, connectTimeout, writeTimeout, readTimeout, null, null, callBack);
     }
 
     /**
@@ -262,13 +258,12 @@ public class OkhttpUtil
      *
      * @param url
      * @param paramsMap
-     * @param headerMap
      * @param interceptor
      * @param callBack
      */
-    public static void okHttpPut(String url, Map<String, String> paramsMap, Map<String, String> headerMap, Interceptor interceptor,  CallBackUtil callBack)
+    public static void okHttpPut(String url, Map<String, String> paramsMap, Interceptor interceptor,  CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_PUT, url, paramsMap, 0, 0, 0, headerMap, interceptor, callBack).execute();
+        okHttpPut(url, paramsMap, 0, 0, 0, null, interceptor, callBack);
     }
 
     /**
@@ -350,7 +345,7 @@ public class OkhttpUtil
      */
     public static void okHttpPostJson(String url, String jsonStr, CallBackUtil callBack)
     {
-        okHttpPostJson(url, jsonStr, null, callBack);
+        okHttpPostJson(url, jsonStr, 0, 0, 0, null, null, callBack);
     }
 
     /**
@@ -363,7 +358,7 @@ public class OkhttpUtil
      */
     public static void okHttpPostJson(String url, String jsonStr, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_POST, url, jsonStr, 0, 0, 0, headerMap, null, callBack).execute();
+        okHttpPostJson(url, jsonStr, 0, 0, 0, headerMap, null, callBack);
     }
 
     /**
@@ -374,12 +369,11 @@ public class OkhttpUtil
      * @param connectTimeout
      * @param writeTimeout
      * @param readTimeout
-     * @param headerMap
      * @param callBack
      */
-    public static void okHttpPostJson(String url, String jsonStr, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, CallBackUtil callBack)
+    public static void okHttpPostJson(String url, String jsonStr, long connectTimeout, long writeTimeout, long readTimeout, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_POST, url, jsonStr, connectTimeout, writeTimeout, readTimeout, headerMap, null, callBack).execute();
+        okHttpPostJson( url, jsonStr, connectTimeout, writeTimeout, readTimeout, null, null, callBack);
     }
 
     /**
@@ -387,13 +381,12 @@ public class OkhttpUtil
      *
      * @param url
      * @param jsonStr
-     * @param headerMap
      * @param interceptor
      * @param callBack
      */
-    public static void okHttpPostJson(String url, String jsonStr, Map<String, String> headerMap, Interceptor interceptor,  CallBackUtil callBack)
+    public static void okHttpPostJson(String url, String jsonStr, Interceptor interceptor,  CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_POST, url, jsonStr, 0, 0, 0, headerMap, interceptor, callBack).execute();
+        okHttpPostJson(url, jsonStr, 0, 0, 0, null, interceptor, callBack);
     }
 
     /**
@@ -574,7 +567,7 @@ public class OkhttpUtil
      */
     public static void okHttpDownloadFile(String url, Map<String, String> paramsMap, CallBackUtil.CallBackFile callBack)
     {
-        okHttpGet(url, paramsMap, null, callBack);
+        okHttpGet(url, paramsMap, 0, 0, 0, null, null, callBack);
     }
 
     /*###########################################################
@@ -598,7 +591,7 @@ public class OkhttpUtil
      */
     public static void okHttpGetBitmap(String url, Map<String, String> paramsMap, CallBackUtil.CallBackBitmap callBack)
     {
-        okHttpGet(url, paramsMap, null, callBack);
+        okHttpGet(url, paramsMap, 0, 0, 0, null, null, callBack);
     }
 
     /*###########################################################
@@ -622,7 +615,7 @@ public class OkhttpUtil
      */
     public static void okHttpPutJson(String url, String jsonStr, CallBackUtil callBack)
     {
-        okHttpPutJson(url, jsonStr, null, callBack);
+        okHttpPutJson(url, jsonStr, 0, 0, 0, null, null, callBack);
     }
 
     /**
@@ -635,7 +628,7 @@ public class OkhttpUtil
      */
     public static void okHttpPutJson(String url, String jsonStr, Map<String, String> headerMap, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_PUT, url, jsonStr, 0, 0, 0, headerMap, null, callBack).execute();
+        okHttpPutJson(url, jsonStr, 0, 0, 0, headerMap, null, callBack);
     }
 
     /**
@@ -646,12 +639,11 @@ public class OkhttpUtil
      * @param connectTimeout
      * @param writeTimeout
      * @param readTimeout
-     * @param headerMap
      * @param callBack
      */
-    public static void okHttpPutJson(String url, String jsonStr, long connectTimeout, long writeTimeout, long readTimeout, Map<String, String> headerMap, CallBackUtil callBack)
+    public static void okHttpPutJson(String url, String jsonStr, long connectTimeout, long writeTimeout, long readTimeout, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_PUT, url, jsonStr, connectTimeout, writeTimeout, readTimeout, headerMap, null, callBack).execute();
+        okHttpPutJson(url, jsonStr, connectTimeout, writeTimeout, readTimeout, null, null, callBack);
     }
 
     /**
@@ -659,13 +651,12 @@ public class OkhttpUtil
      *
      * @param url
      * @param jsonStr
-     * @param headerMap
      * @param interceptor
      * @param callBack
      */
-    public static void okHttpPutJson(String url, String jsonStr, Map<String, String> headerMap, Interceptor interceptor,  CallBackUtil callBack)
+    public static void okHttpPutJson(String url, String jsonStr, Interceptor interceptor, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_PUT, url, jsonStr, 0, 0, 0, headerMap, interceptor, callBack).execute();
+        okHttpPutJson(url, jsonStr, 0, 0, 0, null, interceptor, callBack);
     }
 
     /**
