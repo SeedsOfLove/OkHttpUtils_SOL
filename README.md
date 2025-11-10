@@ -14,7 +14,7 @@ allprojects {
 ### Step 2. Add the dependency
 ```
 dependencies {
-        implementation 'com.github.SeedsOfLove:OkHttpUtils_SOL:1.0.3'
+        implementation 'com.github.SeedsOfLove:OkHttpUtils_SOL:1.0.4'
 	}
 ```
 
