@@ -101,13 +101,15 @@ public class RequestUtil
     //含文件（List多个）
     RequestUtil(String methodType, String url, Map<String, String> paramsMap,
                 List<File> fileList, String fileKey, String fileType,
-                Map<String, String> headerMap, CallBackUtil callBack)
+                Map<String, String> headerMap,
+                Interceptor interceptor,
+                CallBackUtil callBack)
     {
         this(methodType, url, null,
                 null, fileList, fileKey, null, fileType,
                 0, 0, 0,
                 paramsMap, headerMap,
-                null,
+                interceptor,
                 callBack);
     }
 

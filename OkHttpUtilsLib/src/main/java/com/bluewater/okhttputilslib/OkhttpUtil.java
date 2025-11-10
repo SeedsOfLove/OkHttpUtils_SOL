@@ -485,7 +485,36 @@ public class OkhttpUtil
      */
     public static void okHttpUploadListFile(String url, Map<String, String> paramsMap, List<File> fileList, String fileKey, String fileType, CallBackUtil callBack)
     {
-        okHttpUploadListFile(url, paramsMap, fileList, fileKey, fileType, null, callBack);
+        okHttpUploadListFile(url, paramsMap, fileList, fileKey, fileType, null, null, callBack);
+    }
+
+    /**
+     * post请求，上传多个文件，以list集合的形式
+     *
+     * @param url：url
+     * @param fileList：集合元素是File对象
+     * @param fileKey：上传参数时fileList对应的键
+     * @param fileType：File类型，是image，video，audio，file
+     * @param callBack：回调接口，onFailure方法在请求失败时调用，onResponse方法在请求成功后调用，这两个方法都执行在UI线程。
+     */
+    public static void okHttpUploadListFile(String url, List<File> fileList, String fileKey, String fileType, Interceptor interceptor, CallBackUtil callBack)
+    {
+        okHttpUploadListFile(url, null, fileList, fileKey, fileType, interceptor, callBack);
+    }
+
+    /**
+     * post请求，上传多个文件，以list集合的形式
+     *
+     * @param url：url
+     * @param fileList：集合元素是File对象
+     * @param fileKey：上传参数时fileList对应的键
+     * @param fileType：File类型，是image，video，audio，file
+     * @param paramsMap：map集合，封装键值对参数
+     * @param callBack：回调接口，onFailure方法在请求失败时调用，onResponse方法在请求成功后调用，这两个方法都执行在UI线程。
+     */
+    public static void okHttpUploadListFile(String url, Map<String, String> paramsMap, List<File> fileList, String fileKey, String fileType, Interceptor interceptor, CallBackUtil callBack)
+    {
+        okHttpUploadListFile(url, paramsMap, fileList, fileKey, fileType, null, interceptor, callBack);
     }
 
     /**
@@ -497,11 +526,12 @@ public class OkhttpUtil
      * @param fileType：File类型，是image，video，audio，file
      * @param paramsMap：map集合，封装键值对参数
      * @param headerMap：map集合，封装请求头键值对
+     * @param interceptor
      * @param callBack：回调接口，onFailure方法在请求失败时调用，onResponse方法在请求成功后调用，这两个方法都执行在UI线程。
      */
-    public static void okHttpUploadListFile(String url, Map<String, String> paramsMap, List<File> fileList, String fileKey, String fileType, Map<String, String> headerMap, CallBackUtil callBack)
+    public static void okHttpUploadListFile(String url, Map<String, String> paramsMap, List<File> fileList, String fileKey, String fileType, Map<String, String> headerMap, Interceptor interceptor, CallBackUtil callBack)
     {
-        new RequestUtil(METHOD_POST, url, paramsMap, fileList, fileKey, fileType, headerMap, callBack).execute();
+        new RequestUtil(METHOD_POST, url, paramsMap, fileList, fileKey, fileType, headerMap, interceptor, callBack).execute();
     }
 
     /**
